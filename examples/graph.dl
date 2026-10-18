@@ -1,0 +1,19 @@
+% Transitive closure, same-generation, and stratified negation.
+edge(a, b). edge(b, c). edge(c, d). edge(d, b). edge(x, y).
+path(X, Y) :- edge(X, Y).
+path(X, Y) :- path(X, Z), edge(Z, Y).
+node(X) :- edge(X, _).
+node(Y) :- edge(_, Y).
+unreachable_from_a(X) :- node(X), not path(a, X), X != a.
+on_cycle(X) :- path(X, X).
+
+parent(alice, bob). parent(alice, carol). parent(bob, dave). parent(carol, erin).
+person(X) :- parent(X, _).
+person(X) :- parent(_, X).
+sg(X, X) :- person(X).
+sg(X, Y) :- parent(P, X), parent(Q, Y), sg(P, Q).
+
+?- path(a, X).
+?- unreachable_from_a(X).
+?- on_cycle(X).
+?- sg(dave, Y), Y != dave.
